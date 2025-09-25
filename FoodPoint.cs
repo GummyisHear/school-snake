@@ -20,6 +20,8 @@ public class FoodPoint : Point
         snake.Grow(Score);
         Clear();
 
+        Resources.PlaySound("pickup.mp3");
+
         Map.AddRandomFood();
     }
 }
