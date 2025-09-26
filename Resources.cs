@@ -6,12 +6,56 @@ public class Resources
 {
     public static string ResourcesPath = "";
     private static readonly List<SoundInstance> _sounds = [];
+    public static readonly Dictionary<string, char[,]> Maps = [];
 
     static Resources()
     {
         var ind = Directory.GetCurrentDirectory().IndexOf("bin", StringComparison.Ordinal);
         var binFolder = Directory.GetCurrentDirectory().Substring(0, ind);
         ResourcesPath = Path.Combine(binFolder, "resources");
+
+        var maps = Directory.GetFiles(Path.Combine(ResourcesPath, "maps"));
+
+        foreach (var mapFile in maps)
+        {
+            var fileName = Path.GetFileName(mapFile);
+            var i = -1;
+            var width = 0;
+            var height = 0;
+
+            foreach (var line in File.ReadAllLines(mapFile))
+            {
+                i++;
+                if (line.Length == 0 || string.IsNullOrWhiteSpace(line))
+                    continue;
+                if (i == 0)
+                {
+                    var dim = line.Split(':');
+                    width = int.Parse(dim[0]);
+                    height = int.Parse(dim[1]);
+                    Maps[fileName] = new char[width, height];
+                    continue;
+                }
+
+                var charMap = Maps[fileName];
+                var x = 0;
+                foreach (var c in line)
+                {
+                    try
+                    {
+                        charMap[x, i] = c;
+                    }
+                    catch
+                    {
+                        Console.WriteLine($"ERROR: {fileName} X {x} Y {i}");
+                        break;
+                    }
+
+                    x++;
+                }
+            }
+            
+        }
     }
 
     public static void RemoveAllSounds()
@@ -87,7 +131,11 @@ public class Resources
             var dateTime = DateTimeOffset.FromUnixTimeSeconds(i.Time).UtcDateTime;
             var readableTime = dateTime.ToString("yyyy-MM-dd");
             index++;
-            return $"{index}# {i.Name}: {i.Score} [{readableTime}]";
+            var str = $"#{index} ";
+            str += i.Name.PadRight(8);
+            str += $"- {i.Score}".PadRight(6);
+            str += $"[{readableTime}]";
+            return str;
         });
 
         return ret.ToList();

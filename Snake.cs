@@ -76,6 +76,17 @@ public class Snake : Shape
 
     public void HandleKey(ConsoleKey key)
     {
+        switch (key)
+        {
+            case ConsoleKey.Escape:
+                Map.Pause();
+                break;
+            default:
+                if (Map.Paused)
+                    Map.Unpause();
+                break;
+        }
+
         var axis = key switch
         {
             ConsoleKey.UpArrow => Axis.Up,
