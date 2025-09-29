@@ -158,12 +158,12 @@ public class Map
             for (var x = 0; x < charMap.GetLength(0); x++)
             {
                 var c = charMap[x, y];
-                if (c == ' ' || char.IsWhiteSpace(c))
-                    continue;
-
-                var obs = new Obstacle(x, y, c, ConsoleColor.Red);
-                Add(obs);
-                obs.Draw();
+                if (c == 'X')
+                {
+                    var obs = new Obstacle(x, y, c, ConsoleColor.Red);
+                    Add(obs);
+                    obs.Draw();
+                }
             }
         }
     }

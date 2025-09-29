@@ -2,7 +2,7 @@
 
 public static class MathUtils
 {
-    public static List<Point> BresenhamLine(int x1, int y1, int x2, int y2, char symbol, ConsoleColor color)
+    public static List<Point> BresenhamLine(int x1, int y1, int x2, int y2, char symbol, ConsoleColor color, Shape parent)
     {
         var points = new List<Point>();
 
@@ -14,7 +14,9 @@ public static class MathUtils
 
         while (true)
         {
-            points.Add(new Point(x1, y1, symbol, color));
+            var p = new Point(x1, y1, symbol, color);
+            p.SetParent(parent);
+            points.Add(p);
 
             if (x1 == x2 && y1 == y2)
                 break;

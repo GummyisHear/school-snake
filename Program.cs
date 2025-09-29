@@ -5,6 +5,7 @@ public class Program
     public const int PlaygroundWidth = 50;
     public const int PlaygroundHeight = 25;
     public static string ChosenMap = "";
+    public static SkinType ChosenSkin = SkinType.Rainbow;
 
     public static void Main(string[] args)
     {
@@ -17,6 +18,7 @@ public class Program
             Utils.WriteCentered("1 - Play", PlaygroundWidth / 2, 13);
             Utils.WriteCentered("2 - Map Editor", PlaygroundWidth / 2, 15);
             Utils.WriteCentered("3 - Choose Map", PlaygroundWidth / 2, 17);
+            Utils.WriteCentered("4 - Choose Skin", PlaygroundWidth / 2, 19);
             var key = Console.ReadKey(true).Key;
 
             Console.Clear();
@@ -28,6 +30,7 @@ public class Program
                     break;
                 case ConsoleKey.D2 or ConsoleKey.NumPad2:
                     MapEditor();
+                    Resources.LoadMaps();
                     break;
                 case ConsoleKey.D3 or ConsoleKey.NumPad3:
                     ChooseMap();
@@ -109,7 +112,7 @@ public class Program
             map.Load(ChosenMap);
         }
 
-        var snake = new Snake(new Point(25, 5, 'S'), 5, Axis.Right);
+        var snake = new Snake(new Point(25, 5, 'S'), 5, Axis.Right, ChosenSkin);
         map.Add(snake);
 
         var scoreText = new Text(PlaygroundWidth + 2, 1, "Score:");
@@ -117,9 +120,8 @@ public class Program
         var pauseText = new Text(PlaygroundWidth / 2, 12, true, "Paused", "", "Press any key to continue");
         map.Add(pauseText);
 
-        var obstacle = new Obstacle(32, 22, 'X');
-        map.Add(obstacle);
-
+        map.AddRandomFood();
+        map.AddRandomFood();
         map.AddRandomFood();
 
         Resources.PlaySound("bgm.mp3");
@@ -132,7 +134,7 @@ public class Program
                 snake.HandleKey(key.Key);
             }
 
-            Thread.Sleep(100);
+            Thread.Sleep(70);
 
             if (map.Paused)
             {
@@ -152,7 +154,7 @@ public class Program
                 scoreText.Content = $"Score: {snake.Score}";
                 scoreText.Draw();
             }
-            catch
+            catch (Exception e)
             {
                 Resources.RemoveAllSounds();
                 Resources.PlaySound("fail.mp3");

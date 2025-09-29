@@ -13,48 +13,40 @@ public class Resources
         var ind = Directory.GetCurrentDirectory().IndexOf("bin", StringComparison.Ordinal);
         var binFolder = Directory.GetCurrentDirectory().Substring(0, ind);
         ResourcesPath = Path.Combine(binFolder, "resources");
+        LoadMaps();
+    }
 
+    public static void LoadMaps()
+    {
         var maps = Directory.GetFiles(Path.Combine(ResourcesPath, "maps"));
+        Maps.Clear();
 
         foreach (var mapFile in maps)
         {
             var fileName = Path.GetFileName(mapFile);
-            var i = -1;
-            var width = 0;
-            var height = 0;
+            var lines = File.ReadAllLines(mapFile);
+            if (lines.Length == 0)
+                continue;
 
-            foreach (var line in File.ReadAllLines(mapFile))
+            var dim = lines[0].Split(':');
+            var width = int.Parse(dim[0]);
+            var height = int.Parse(dim[1]);
+            var map = Maps[fileName] = new char[width, height];
+
+            for (var y = 0; y < height; y++)
             {
-                i++;
-                if (line.Length == 0 || string.IsNullOrWhiteSpace(line))
-                    continue;
-                if (i == 0)
+                var line = lines.Length > y ? lines[y + 1] : "";
+                for (var x = 0; x < width; x++)
                 {
-                    var dim = line.Split(':');
-                    width = int.Parse(dim[0]);
-                    height = int.Parse(dim[1]);
-                    Maps[fileName] = new char[width, height];
-                    continue;
-                }
-
-                var charMap = Maps[fileName];
-                var x = 0;
-                foreach (var c in line)
-                {
-                    try
+                    if (x >= line.Length)
                     {
-                        charMap[x, i] = c;
-                    }
-                    catch
-                    {
-                        Console.WriteLine($"ERROR: {fileName} X {x} Y {i}");
-                        break;
+                        map[x, y] = ' ';
+                        continue;
                     }
 
-                    x++;
+                    map[x, y] = line[x];
                 }
             }
-            
         }
     }
 
@@ -89,11 +81,19 @@ public class Resources
         };
         sound.Handler = handler;
 
-        player.Init(audio);
-        player.Play();
-        player.PlaybackStopped += handler;
+        try
+        {
+            player.Init(audio);
+            player.Play();
+            player.PlaybackStopped += handler;
 
-        _sounds.Add(sound);
+            _sounds.Add(sound);
+        }
+        catch (Exception ex)
+        {
+            // ignore
+            return;
+        }
     }
 
     public static void SaveScore(string name, int score)

@@ -2,6 +2,8 @@
 
 public class Shape
 {
+    public static Shape Default = new Shape();
+
     public Map Map;
     public List<Point> Points;
     public bool Cleared;

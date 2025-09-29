@@ -4,15 +4,24 @@ public class Snake : Shape
 {
     public Axis Direction;
     public int Score;
+    public SnakeSkin Skin;
 
-    public Snake(Point tail, int length, Axis axis)
+    public Snake(Point tail, int length, Axis axis, SkinType skinType = SkinType.Default)
     {
+        tail.SetParent(this);
+
         Direction = axis;
+        Skin = SkinFactory.Create(skinType);
+
         for (int i = 0; i < length; i++)
         {
-            Point p = new Point(tail);
+            var p = new Point(tail);
+            Skin.ApplyHead(tail, p);
+            p.SetParent(this);
             p.Move(i, axis);
             Points.Add(p);
+
+            tail = p;
         }
     }
 
@@ -34,6 +43,8 @@ public class Snake : Shape
     {
         var head = Points.Last();
         var nextPoint = new Point(head);
+        Skin.ApplyHead(head, nextPoint);
+        nextPoint.SetParent(this);
         nextPoint.Move(1, Direction);
         return nextPoint;
     }
@@ -42,6 +53,8 @@ public class Snake : Shape
     {
         var tail = Points.First();
         var prevPoint = new Point(tail);
+        Skin.ApplyTail(tail, prevPoint);
+        prevPoint.SetParent(this);
         prevPoint.Move(-1, Direction);
         return prevPoint;
     }
@@ -61,7 +74,12 @@ public class Snake : Shape
             return true;
         }
 
-        return false;
+        // todo make obstacle inherit from point instead of shape
+        if (point.Parent is Obstacle || point.Parent == this || point.Parent is Line)
+            return false;
+
+
+        return true;
     }
 
     public void Grow(int amount = 1)

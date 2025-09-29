@@ -5,7 +5,6 @@ public class Text : Shape
     public int X;
     public int Y;
     public string Content;
-    public string[] Contents;
     public ConsoleColor Color;
     public bool Centered;
 
@@ -14,7 +13,6 @@ public class Text : Shape
         X = x;
         Y = y;
         Content = content;
-        Contents = [content];
         Color = color;
         Centered = centeredX;
     }
@@ -23,8 +21,7 @@ public class Text : Shape
     {
         X = x;
         Y = y;
-        Contents = contents;
-        Content = "";
+        Content = string.Join(Environment.NewLine, contents);
         Color = ConsoleColor.White;
         Centered = centeredX;
     }
@@ -34,10 +31,12 @@ public class Text : Shape
         var x = X;
         var y = Y;
         var i = 0;
-        
+
+        var clrBefore = Console.ForegroundColor;
         Console.ForegroundColor = Color;
 
-        foreach (var item in Contents)
+        var contents = Content.Split("\n");
+        foreach (var item in contents)
         {
             if (Centered)
             {
@@ -50,7 +49,7 @@ public class Text : Shape
             i++;
         }
 
-        Console.ResetColor();
+        Console.ForegroundColor = clrBefore;
         Cleared = false;
     }
 
@@ -61,7 +60,8 @@ public class Text : Shape
         var x = X;
         var y = Y;
         var i = 0;
-        foreach (var item in Contents)
+        var contents = Content.Split("\n");
+        foreach (var item in contents)
         {
             if (Centered)
             {

@@ -10,8 +10,7 @@ public class Obstacle : Shape
     public Obstacle(int x, int y, char sym, ConsoleColor color = ConsoleColor.White)
     {
         var point = new Point(x, y, sym, color);
+        point.SetParent(this);
         Points.Add(point);
     }
-
-
 }

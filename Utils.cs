@@ -43,4 +43,32 @@ public static class Utils
             return ret;
         }
     }
+
+    public static ConsoleColor NextRainbowColor(this ConsoleColor color)
+    {
+        return color switch
+        {
+            ConsoleColor.Red => ConsoleColor.Yellow,
+            ConsoleColor.Yellow => ConsoleColor.Green,
+            ConsoleColor.Green => ConsoleColor.Cyan,
+            ConsoleColor.Cyan => ConsoleColor.Blue,
+            ConsoleColor.Blue => ConsoleColor.Magenta,
+            ConsoleColor.Magenta => ConsoleColor.Red,
+            _ => ConsoleColor.Red
+        };
+    }
+
+    public static ConsoleColor PrevRainbowColor(this ConsoleColor color)
+    {
+        return color switch
+        {
+            ConsoleColor.Red => ConsoleColor.Magenta,
+            ConsoleColor.Magenta => ConsoleColor.Blue,
+            ConsoleColor.Blue => ConsoleColor.Cyan,
+            ConsoleColor.Cyan => ConsoleColor.Green,
+            ConsoleColor.Green => ConsoleColor.Yellow,
+            ConsoleColor.Yellow => ConsoleColor.Red,
+            _ => ConsoleColor.Red
+        };
+    }
 }
