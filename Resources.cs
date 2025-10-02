@@ -7,6 +7,8 @@ public class Resources
     public static string ResourcesPath = "";
     private static readonly List<SoundInstance> _sounds = [];
     public static readonly Dictionary<string, char[,]> Maps = [];
+    public static readonly Dictionary<SkinColor, SnakeColor> SkinColors = [];
+    public static readonly Dictionary<SkinSymbol, SnakeSymbol> SkinSymbols = [];
 
     static Resources()
     {
@@ -14,6 +16,36 @@ public class Resources
         var binFolder = Directory.GetCurrentDirectory().Substring(0, ind);
         ResourcesPath = Path.Combine(binFolder, "resources");
         LoadMaps();
+        LoadSkins();
+    }
+
+    public static void LoadSkins()
+    {
+        SkinColors.Clear();
+        SkinSymbols.Clear();
+
+        var colors = AppDomain.CurrentDomain.GetAssemblies()
+            .SelectMany(a => a.GetTypes())
+            .Where(t => typeof(SnakeColor).IsAssignableFrom(t) && !t.IsAbstract);
+        var symbols = AppDomain.CurrentDomain.GetAssemblies()
+            .SelectMany(a => a.GetTypes())
+            .Where(t => typeof(SnakeSymbol).IsAssignableFrom(t) && !t.IsAbstract);
+
+        foreach (var type in colors)
+        {
+            if (Activator.CreateInstance(type) is SnakeColor instance)
+            {
+                SkinColors[instance.Type] = instance;
+            }
+        }
+
+        foreach (var type in symbols)
+        {
+            if (Activator.CreateInstance(type) is SnakeSymbol instance)
+            {
+                SkinSymbols[instance.Type] = instance;
+            }
+        }
     }
 
     public static void LoadMaps()

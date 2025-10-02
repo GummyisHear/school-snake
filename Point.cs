@@ -70,4 +70,15 @@ public class Point
         Console.Write(' ');
         Map.Remove(this);
     }
+
+    public Axis GetDirectionTo(Point p)
+    {
+        if (p.X > X)
+            return Axis.Right;
+        if (p.X < X)
+            return Axis.Left;
+        if (p.Y > Y)
+            return Axis.Down;
+        return Axis.Up;
+    }
 }

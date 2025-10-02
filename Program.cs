@@ -5,7 +5,8 @@ public class Program
     public const int PlaygroundWidth = 50;
     public const int PlaygroundHeight = 25;
     public static string ChosenMap = "";
-    public static SkinType ChosenSkin = SkinType.Rainbow;
+    public static SkinColor SkinColor = SkinColor.Default;
+    public static SkinSymbol SkinSymbol = SkinSymbol.Default;
 
     public static void Main(string[] args)
     {
@@ -35,11 +36,46 @@ public class Program
                 case ConsoleKey.D3 or ConsoleKey.NumPad3:
                     ChooseMap();
                     break;
+                case ConsoleKey.D4 or ConsoleKey.NumPad4:
+                    ChooseSkin();
+                    break;
             }
 
             if (key == ConsoleKey.Escape)
                 break;
         } 
+    }
+
+    public static void ChooseSkin()
+    {
+        Console.Clear();
+        Console.CursorVisible = true;
+
+        var skinColors = Enum.GetValues<SkinColor>();
+        var i = 0;
+        foreach (var id in skinColors)
+        {
+            Utils.WriteCentered($"#{i,-3} {id,-12}", PlaygroundWidth / 2, 10 + i);
+            i++;
+        }
+
+        Utils.WriteCentered("Choose Color:", PlaygroundWidth / 2, 10 + i + 2);
+        var key = Utils.AskInt("", 0, i);
+        SkinColor = skinColors[key];
+
+        Console.Clear();
+
+        var skinSymbols = Enum.GetValues<SkinSymbol>();
+        i = 0;
+        foreach (var id in skinSymbols)
+        {
+            Utils.WriteCentered($"#{i,-3} {id,-12}", PlaygroundWidth / 2, 10 + i);
+            i++;
+        }
+
+        Utils.WriteCentered("Choose Symbol:", PlaygroundWidth / 2, 10 + i + 2);
+        key = Utils.AskInt("", 0, i);
+        SkinSymbol = skinSymbols[key];
     }
 
     public static void ChooseMap()
@@ -112,7 +148,7 @@ public class Program
             map.Load(ChosenMap);
         }
 
-        var snake = new Snake(new Point(25, 5, 'S'), 5, Axis.Right, ChosenSkin);
+        var snake = new Snake(new Point(25, 5, 'S'), 5, Axis.Right, SkinColor, SkinSymbol);
         map.Add(snake);
 
         var scoreText = new Text(PlaygroundWidth + 2, 1, "Score:");
