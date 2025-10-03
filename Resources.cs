@@ -121,7 +121,7 @@ public class Resources
 
             _sounds.Add(sound);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             // ignore
             return;

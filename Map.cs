@@ -152,7 +152,7 @@ public class Map
     public void Load(string mapName)
     {
         var charMap = Resources.Maps[mapName];
-
+            
         for (var y = 0; y < charMap.GetLength(1); y++)
         {
             for (var x = 0; x < charMap.GetLength(0); x++)
